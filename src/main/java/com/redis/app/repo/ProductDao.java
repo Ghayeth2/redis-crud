@@ -1,6 +1,7 @@
 package com.redis.app.repo;
 
 import com.redis.app.entity.Product;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +10,10 @@ import java.util.List;
 @Repository
 public class ProductDao {
     private final String HASH_KEY = "product";
+    @Autowired
     private RedisTemplate redisTemplate;
 
+    // Create or update existing one
     public Product save(Product product) {
         redisTemplate.opsForHash().put(HASH_KEY, product.getId(), product);
         return product;
@@ -22,11 +25,6 @@ public class ProductDao {
 
     public Product findById(int id) {
         return (Product) redisTemplate.opsForHash().get(HASH_KEY, id);
-    }
-
-    public Product update(Product product, int id) {
-        redisTemplate.opsForHash().put(HASH_KEY, id, product);
-        return product;
     }
 
     public void delete(int id) {
